@@ -9,16 +9,34 @@ import Foundation
 
 /// Represents an HTML tag like `<div>{{content}}</div>`, with a tag and an
 /// optional HTML child.
-struct HTMLNode: HTML {
+public struct HTMLNode: HTML {
   var tag: String
   var child: HTML?
   var inline = false
 
-  func getTag() -> String? {
+  public init(tag: String, inline: Bool = false) {
+    self.tag = tag
+    self.child = nil
+    self.inline = inline
+  }
+
+  public init(tag: String, child: HTML?, inline: Bool = false) {
+    self.tag = tag
+    self.child = child
+    self.inline = inline
+  }
+
+  public init(tag: String, inline: Bool = false, @HTMLBuilder child: () -> HTML) {
+    self.tag = tag
+    self.child = child()
+    self.inline = inline
+  }
+
+  public func getTag() -> String? {
     return self.tag
   }
 
-  func renderAsHTML(into stream: HTMLOutputStream, attributes: [Attribute]) {
+  public func renderAsHTML(into stream: HTMLOutputStream, attributes: [Attribute]) {
     /// Open the tag
     stream.writeIndent()
     stream.write("<")
